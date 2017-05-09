@@ -51,5 +51,16 @@ class CurrentWeather {
         }
         return _currentTemp
     }
+    
+    //use AlamoFire to retrieve weather details from OpenWeatherMap
+    func downloadWeatherDetails(completed: DownloadComplete) {
+        //AlamoFire download
+        let currentWeatherURL = URL(string:CURRENT_WEATHER_URL)!
+        Alamofire.request(currentWeatherURL).responseJSON { response in
+            let result = response.result
+            print(response)
+        }
+        completed()
+    }
 }
 
