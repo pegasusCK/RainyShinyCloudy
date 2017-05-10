@@ -52,8 +52,8 @@ class CurrentWeather {
         return _currentTemp
     }
     
-    //use AlamoFire to retrieve weather details from OpenWeatherMap
-    func downloadWeatherDetails(completed: DownloadComplete) {
+    //use AlamoFire to retrieve weather details from OpenWeatherMap @escaping closure
+    func downloadWeatherDetails(completed: @escaping DownloadComplete) {
         //AlamoFire download
         let currentWeatherURL = URL(string:CURRENT_WEATHER_URL)!
         Alamofire.request(currentWeatherURL).responseJSON { response in
@@ -64,13 +64,11 @@ class CurrentWeather {
                 
                 if let name = dict["name"] as? String {
                     self._cityName = name.capitalized
-                    print(self._cityName)
                 } //pull name field
                 
                 if let weather = dict["weather"] as? [Dictionary<String, Any>] {
                     if let main = weather[0]["main"] as? String {
                         self._weatherType = main.capitalized
-                        print(self._weatherType)
                     }
                 } //pull weather type from dictonary weather and array of dictionaires "weather"
                 
@@ -79,12 +77,12 @@ class CurrentWeather {
                         let kelvinToFarenheitPreDivision = (currentTemperature * (9/5) - 459.67)
                         let kelvinToFarenheit = Double(round(10 * kelvinToFarenheitPreDivision/10))
                         self._currentTemp = kelvinToFarenheit
-                        print(self._currentTemp)
                     }
                 } //pull temp field from main
             }
+            //moved up into response code section to make sure data is retrieved from the web before escaping
+            completed()
         }
-        completed()
     }
 }
 
