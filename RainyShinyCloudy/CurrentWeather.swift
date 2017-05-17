@@ -55,23 +55,22 @@ class CurrentWeather {
     //use AlamoFire to retrieve weather details from OpenWeatherMap @escaping closure
     func downloadWeatherDetails(completed: @escaping DownloadComplete) {
         //AlamoFire download
-        let currentWeatherURL = URL(string:CURRENT_WEATHER_URL)!
-        Alamofire.request(currentWeatherURL).responseJSON { response in
+        Alamofire.request(CURRENT_WEATHER_URL).responseJSON { response in
             let result = response.result
             
             //define dictonary for JSON data pulled from OpenWeatherMap
             if let dict = result.value as? Dictionary<String, Any> {
                 
-                if let name = dict["name"] as? String {
-                    self._cityName = name.capitalized
-                } //pull name field
-                
+                if let city = dict["name"] as? String {
+                    self._cityName = city.capitalized
+                }
+
                 if let weather = dict["weather"] as? [Dictionary<String, Any>] {
                     if let main = weather[0]["main"] as? String {
                         self._weatherType = main.capitalized
                     }
                 } //pull weather type from dictonary weather and array of dictionaires "weather"
-                
+ 
                 if let main = dict["main"] as? Dictionary<String, Any> {
                     if let currentTemperature = main["temp"] as? Double {
                         let kelvinToFarenheitPreDivision = (currentTemperature * (9/5) - 459.67)
